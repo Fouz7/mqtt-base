@@ -1,0 +1,16 @@
+FROM ubuntu:20.04
+
+RUN useradd -ms /bin/bash appuser
+
+RUN apt-get update && \
+    apt-get install -y mosquitto mosquitto-clients
+
+WORKDIR /opt/app
+
+RUN chown -R appuser:appuser /opt/app
+
+USER appuser
+
+EXPOSE 1883
+
+CMD ["mosquitto", "-c", "/etc/mosquitto/mosquitto.conf"]

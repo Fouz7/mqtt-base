@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  mqtt-broker:
+    build:
+      context: .
+      dockerfile: Dockerfile-mosquitto
+    container_name: mqtt-broker
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/etc/mosquitto/mosquitto.conf
+      - ./mosquitto/data:/opt/app/data
+      - ./mosquitto/log:/opt/app/log
+
+  app:
+    image: your-spring-boot-app-image
+    depends_on:
+      - mqtt-broker
+    environment:
+      - application.mqtt.broker-address=tcp://mqtt-broker:1883
+      - application.mqtt.username=
+      - application.mqtt.password=
+    ports:
+      - "8080:8080"
